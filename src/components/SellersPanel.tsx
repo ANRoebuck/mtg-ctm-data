@@ -61,7 +61,10 @@ export function SellersPanel({ sellers, loading, error, health, healthLoading, h
                       </div>
                       {result?.status === 'ok' && (
                         <div className="health-detail">
-                          {result.resultCount} results for "{result.searchTerm}" · {result.elapsedMs}ms
+                          <span className="health-detail-text">
+                            {result.resultCount} results for "{result.searchTerm}"
+                          </span>
+                          <span className="health-elapsed">{result.elapsedMs}ms</span>
                         </div>
                       )}
                     </li>
