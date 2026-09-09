@@ -29,6 +29,7 @@ export interface SellerHealthStatus {
   status: 'ok' | 'no results'
   resultCount: number
   searchTerm: string
+  elapsedMs: number
 }
 
 export type HealthCheckResult = Record<string, SellerHealthStatus>

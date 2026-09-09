@@ -104,9 +104,9 @@ export const mockFaq: FaqItem[] = [
 ]
 
 export const mockHealthCheck: HealthCheckResult = {
-  'Card Market': { status: 'ok', resultCount: 12, searchTerm: 'Lightning Bolt' },
-  'MTG Mint Card': { status: 'ok', resultCount: 8, searchTerm: 'Steam Vents' },
-  'Mana Stack': { status: 'ok', resultCount: 5, searchTerm: 'Counterspell' },
-  'Star City Games': { status: 'no results', resultCount: 0, searchTerm: 'Counterspell' },
-  'TCGplayer': { status: 'ok', resultCount: 20, searchTerm: 'Lightning Bolt' },
+  'Card Market': { status: 'ok', resultCount: 12, searchTerm: 'Lightning Bolt', elapsedMs: 842 },
+  'MTG Mint Card': { status: 'ok', resultCount: 8, searchTerm: 'Steam Vents', elapsedMs: 1204 },
+  'Mana Stack': { status: 'ok', resultCount: 5, searchTerm: 'Counterspell', elapsedMs: 2531 },
+  'Star City Games': { status: 'no results', resultCount: 0, searchTerm: 'Counterspell', elapsedMs: 976 },
+  'TCGplayer': { status: 'ok', resultCount: 20, searchTerm: 'Lightning Bolt', elapsedMs: 611 },
 }
