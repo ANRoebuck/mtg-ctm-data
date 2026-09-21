@@ -41,10 +41,10 @@ export function CardsBySellerPanel({
   const error = isAllSellers ? allSellersError : bySellerError
 
   const visible = cards ? cards.slice(0, topN) : []
-  const total = visible.reduce((s, d) => s + d.count, 0)
+  const total = cards ? cards.reduce((s, d) => s + d.count, 0) : 0
 
   return (
-    <Panel title={isAllSellers ? 'Click-throughs by Card' : `Click-throughs by Card — ${selectedSeller}`}>
+    <Panel id="cards-by-seller" title={isAllSellers ? 'Click-throughs by Card' : `Click-throughs by Card — ${selectedSeller}`}>
       <div className="panel-controls">
         <div className="control-group">
           <label>Seller</label>
@@ -99,7 +99,7 @@ export function CardsBySellerPanel({
 
       {visible.length > 0 && chartType === 'bar' && (
         <ResponsiveContainer width="100%" height={260}>
-          <BarChart data={visible} layout="vertical" margin={{ left: 120, right: 20, top: 4, bottom: 4 }}>
+          <BarChart data={visible} layout="vertical" margin={{ left: 4, right: 20, top: 4, bottom: 4 }}>
             <XAxis type="number" tick={{ fontSize: 12 }} />
             <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 12 }} />
             <Tooltip formatter={(val) => [val, 'Click-throughs']} />

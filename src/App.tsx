@@ -1,7 +1,5 @@
 import { useState, useCallback } from 'react'
-import { USE_MOCK_DATA_KEY } from './config'
 import * as api from './api'
-import * as mock from './mockData'
 import { useData } from './useData'
 import { SellersPanel } from './components/SellersPanel'
 import { SearchHistoryPanel } from './components/SearchHistoryPanel'
@@ -10,12 +8,7 @@ import { CardsBySellerPanel } from './components/CardsBySellerPanel'
 import { FaqPanel } from './components/FaqPanel'
 import type { Seller, SearchHistoryEntry, ClickThroughEntry, ClickThroughBySeller, FaqItem, HealthCheckResult } from './types'
 
-function initMock(): boolean {
-  return localStorage.getItem(USE_MOCK_DATA_KEY) === 'true'
-}
-
 export default function App() {
-  const [useMock, setUseMock] = useState(initMock)
   const [searchDays, setSearchDays] = useState<number | undefined>(undefined)
   const [searchTopN, setSearchTopN] = useState(10)
   const [ctSellerDays, setCtSellerDays] = useState<number | undefined>(undefined)
@@ -24,40 +17,32 @@ export default function App() {
   const [ctCardTopN, setCtCardTopN] = useState(10)
   const [healthTick, setHealthTick] = useState(0)
 
-  const toggleMock = () => {
-    setUseMock(prev => {
-      const next = !prev
-      localStorage.setItem(USE_MOCK_DATA_KEY, String(next))
-      return next
-    })
-  }
-
   const sellersResult = useData<Seller[]>(
-    useCallback(() => useMock ? Promise.resolve(mock.mockSellers) : api.fetchSellers(), [useMock])
+    useCallback(() => api.fetchSellers(), [])
   )
 
   const searchResult = useData<SearchHistoryEntry[]>(
-    useCallback(() => useMock ? Promise.resolve(mock.mockSearchHistory) : api.fetchSearchHistory(searchDays), [useMock, searchDays])
+    useCallback(() => api.fetchSearchHistory(searchDays), [searchDays])
   )
 
   const ctSellerResult = useData<ClickThroughEntry[]>(
-    useCallback(() => useMock ? Promise.resolve(mock.mockClickThroughBySeller) : api.fetchClickThroughBySeller(ctSellerDays), [useMock, ctSellerDays])
+    useCallback(() => api.fetchClickThroughBySeller(ctSellerDays), [ctSellerDays])
   )
 
   const ctCardResult = useData<ClickThroughEntry[]>(
-    useCallback(() => useMock ? Promise.resolve(mock.mockClickThroughByCard) : api.fetchClickThroughByCard(ctCardDays), [useMock, ctCardDays])
+    useCallback(() => api.fetchClickThroughByCard(ctCardDays), [ctCardDays])
   )
 
   const ctCardBySellerResult = useData<ClickThroughBySeller[]>(
-    useCallback(() => useMock ? Promise.resolve(mock.mockClickThroughByCardBySeller) : api.fetchClickThroughByCardBySeller(ctCardDays), [useMock, ctCardDays])
+    useCallback(() => api.fetchClickThroughByCardBySeller(ctCardDays), [ctCardDays])
   )
 
   const faqResult = useData<FaqItem[]>(
-    useCallback(() => useMock ? Promise.resolve(mock.mockFaq) : api.fetchFaq(), [useMock])
+    useCallback(() => api.fetchFaq(), [])
   )
 
   const healthResult = useData<HealthCheckResult>(
-    useCallback(() => useMock ? Promise.resolve(mock.mockHealthCheck) : api.fetchHealthCheck(), [useMock, healthTick])
+    useCallback(() => api.fetchHealthCheck(), [healthTick])
   )
 
   const anyError = [sellersResult, searchResult, ctSellerResult, ctCardResult, ctCardBySellerResult].some(r => r.status === 'error')
@@ -70,21 +55,11 @@ export default function App() {
           <span className="app-subtitle">Card price analytics</span>
         </div>
         <div className="header-right">
-          {anyError && !useMock && (
+          {anyError && (
             <span className="header-warning">⚠ Connection error</span>
           )}
-          <label className="mock-toggle">
-            <input type="checkbox" checked={useMock} onChange={toggleMock} />
-            <span className="mock-toggle-label">Mock data</span>
-          </label>
         </div>
       </header>
-
-      {useMock && (
-        <div className="mock-banner">
-          Using mock data — toggle off to connect to the live backend.
-        </div>
-      )}
 
       <main className="app-grid">
         <div className="grid-col">

@@ -28,7 +28,7 @@ interface Props {
 export function ClickThroughPanel({ title, data, loading, error, days, onDaysChange, topN, onTopNChange }: Props) {
   const [chartType, setChartType] = useState<'bar' | 'pie'>('bar')
   const visible = data ? data.slice(0, topN) : []
-  const total = visible.reduce((s, d) => s + d.count, 0)
+  const total = data ? data.reduce((s, d) => s + d.count, 0) : 0
 
   return (
     <Panel title={title}>
@@ -73,7 +73,7 @@ export function ClickThroughPanel({ title, data, loading, error, days, onDaysCha
 
       {visible.length > 0 && chartType === 'bar' && (
         <ResponsiveContainer width="100%" height={260}>
-          <BarChart data={visible} layout="vertical" margin={{ left: 120, right: 20, top: 4, bottom: 4 }}>
+          <BarChart data={visible} layout="vertical" margin={{ left: 4, right: 20, top: 4, bottom: 4 }}>
             <XAxis type="number" tick={{ fontSize: 12 }} />
             <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 12 }} />
             <Tooltip formatter={(val) => [val, 'Click-throughs']} />

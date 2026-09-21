@@ -15,24 +15,46 @@ interface Props {
   onRecheck: () => void
 }
 
+function isHealthy(health: HealthCheckResult | null, name: string): boolean {
+  return health?.[name]?.status === 'ok'
+}
+
+function bySellerHealth(health: HealthCheckResult | null) {
+  return (a: Seller, b: Seller): number => {
+    const aOk = isHealthy(health, a.name)
+    const bOk = isHealthy(health, b.name)
+    if (aOk !== bOk) return aOk ? 1 : -1
+    return a.name.localeCompare(b.name)
+  }
+}
+
 export function SellersPanel({ sellers, loading, error, health, healthLoading, healthError, onRecheck }: Props) {
   const grouped = sellers
     ? REGION_ORDER.reduce<Record<string, Seller[]>>((acc, region) => {
-        const inRegion = sellers.filter(s => s.region === region)
+        const inRegion = sellers
+          .filter(s => s.region === region)
+          .sort(bySellerHealth(health))
         if (inRegion.length) acc[region] = inRegion
         return acc
       }, {})
     : {}
 
+  const healthyCount = sellers?.filter(s => isHealthy(health, s.name)).length ?? 0
+
   return (
-    <Panel title="Sellers">
+    <Panel id="sellers" title="Health Status">
       {sellers && (
         <div className="panel-controls">
           <button className="btn-reload" onClick={onRecheck} disabled={healthLoading}>
             {healthLoading ? 'Checking…' : 'Recheck health'}
           </button>
-          <span className="hint">Tests each seller with a known card search</span>
         </div>
+      )}
+
+      {sellers && health && (
+        <p className="total-label">
+          <strong>{healthyCount}</strong> out of <strong>{sellers.length}</strong> sellers are healthy
+        </p>
       )}
 
       {loading && <LoadingSpinner />}

@@ -9,7 +9,7 @@ interface UseDataResult<T> {
   reload: () => void
 }
 
-export function useData<T>(fetcher: () => Promise<T>, deps: unknown[] = []): UseDataResult<T> {
+export function useData<T>(fetcher: () => Promise<T>): UseDataResult<T> {
   const [data, setData] = useState<T | null>(null)
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState<string | null>(null)
@@ -35,8 +35,7 @@ export function useData<T>(fetcher: () => Promise<T>, deps: unknown[] = []): Use
         }
       })
     return () => { cancelled = true }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tick, ...deps])
+  }, [tick, fetcher])
 
   return { data, status, error, reload }
 }

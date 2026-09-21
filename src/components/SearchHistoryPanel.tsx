@@ -25,6 +25,7 @@ interface Props {
 export function SearchHistoryPanel({ history, loading, error, days, onDaysChange, topN, onTopNChange }: Props) {
   const [view, setView] = useState<'chart' | 'table'>('chart')
   const visible = history ? history.slice(0, topN) : []
+  const total = history ? history.reduce((s, d) => s + d.count, 0) : 0
 
   return (
     <Panel title="Search History">
@@ -58,6 +59,8 @@ export function SearchHistoryPanel({ history, loading, error, days, onDaysChange
         </div>
       </div>
 
+      {total > 0 && <p className="total-label">Total: <strong>{total}</strong> searches</p>}
+
       {loading && <LoadingSpinner />}
       {error && <ConnectionWarning message={error} />}
 
@@ -67,7 +70,7 @@ export function SearchHistoryPanel({ history, loading, error, days, onDaysChange
 
       {visible.length > 0 && view === 'chart' && (
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={visible} layout="vertical" margin={{ left: 120, right: 20, top: 4, bottom: 4 }}>
+          <BarChart data={visible} layout="vertical" margin={{ left: 4, right: 20, top: 4, bottom: 4 }}>
             <XAxis type="number" tick={{ fontSize: 12 }} />
             <YAxis type="category" dataKey="term" width={120} tick={{ fontSize: 12 }} />
             <Tooltip formatter={(val) => [val, 'Searches']} />
