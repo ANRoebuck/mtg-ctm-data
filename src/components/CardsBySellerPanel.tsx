@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { Panel } from './Panel'
+import { TruncatedTick } from './TruncatedTick'
 import { LoadingSpinner } from './LoadingSpinner'
 import { ConnectionWarning } from './ConnectionWarning'
 import type { ClickThroughEntry, ClickThroughBySeller } from '../types'
@@ -47,19 +48,6 @@ export function CardsBySellerPanel({
     <Panel id="cards-by-seller" title={isAllSellers ? 'Click-throughs by Card' : `Click-throughs by Card — ${selectedSeller}`}>
       <div className="panel-controls">
         <div className="control-group">
-          <label>Seller</label>
-          <select
-            value={selectedSeller ?? ''}
-            onChange={e => setSelectedSeller(e.target.value === '' ? null : e.target.value)}
-            className="select-small"
-          >
-            <option value="">All sellers</option>
-            {bySeller?.map(d => (
-              <option key={d.seller} value={d.seller}>{d.seller}</option>
-            ))}
-          </select>
-        </div>
-        <div className="control-group">
           <label>Period</label>
           <div className="btn-group">
             {DAY_OPTIONS.map(opt => (
@@ -86,6 +74,19 @@ export function CardsBySellerPanel({
             <button className={`btn-small ${chartType === 'pie' ? 'active' : ''}`} onClick={() => setChartType('pie')}>Pie</button>
           </div>
         </div>
+        <div className="control-group">
+          <label>Seller</label>
+          <select
+            value={selectedSeller ?? ''}
+            onChange={e => setSelectedSeller(e.target.value === '' ? null : e.target.value)}
+            className="select-small"
+          >
+            <option value="">All sellers</option>
+            {bySeller?.map(d => (
+              <option key={d.seller} value={d.seller}>{d.seller}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {total > 0 && <p className="total-label">Total: <strong>{total}</strong> click-throughs</p>}
@@ -101,7 +102,7 @@ export function CardsBySellerPanel({
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={visible} layout="vertical" margin={{ left: 4, right: 20, top: 4, bottom: 4 }}>
             <XAxis type="number" tick={{ fontSize: 12 }} />
-            <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 12 }} />
+            <YAxis type="category" dataKey="name" width={120} tick={<TruncatedTick />} />
             <Tooltip formatter={(val) => [val, 'Click-throughs']} />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
               {visible.map((_, i) => (

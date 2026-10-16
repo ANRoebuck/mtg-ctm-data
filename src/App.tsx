@@ -12,7 +12,7 @@ export default function App() {
   const [searchDays, setSearchDays] = useState<number | undefined>(undefined)
   const [searchTopN, setSearchTopN] = useState(10)
   const [ctSellerDays, setCtSellerDays] = useState<number | undefined>(undefined)
-  const [ctSellerTopN, setCtSellerTopN] = useState(5)
+  const [ctSellerTopN, setCtSellerTopN] = useState(10)
   const [ctCardDays, setCtCardDays] = useState<number | undefined>(undefined)
   const [ctCardTopN, setCtCardTopN] = useState(10)
   const [healthTick, setHealthTick] = useState(0)

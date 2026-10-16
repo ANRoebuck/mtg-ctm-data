@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { Panel } from './Panel'
+import { TruncatedTick } from './TruncatedTick'
 import { LoadingSpinner } from './LoadingSpinner'
 import { ConnectionWarning } from './ConnectionWarning'
 import type { ClickThroughEntry } from '../types'
@@ -75,7 +76,7 @@ export function ClickThroughPanel({ title, data, loading, error, days, onDaysCha
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={visible} layout="vertical" margin={{ left: 4, right: 20, top: 4, bottom: 4 }}>
             <XAxis type="number" tick={{ fontSize: 12 }} />
-            <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 12 }} />
+            <YAxis type="category" dataKey="name" width={120} tick={<TruncatedTick />} />
             <Tooltip formatter={(val) => [val, 'Click-throughs']} />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
               {visible.map((_, i) => (
