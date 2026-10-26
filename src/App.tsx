@@ -5,8 +5,14 @@ import { SellersPanel } from './components/SellersPanel'
 import { SearchHistoryPanel } from './components/SearchHistoryPanel'
 import { ClickThroughPanel } from './components/ClickThroughPanel'
 import { CardsBySellerPanel } from './components/CardsBySellerPanel'
+import { RecentSearchesPanel } from './components/RecentSearchesPanel'
+import { RecentClickThroughsPanel } from './components/RecentClickThroughsPanel'
+import { CountsByDatePanel } from './components/CountsByDatePanel'
 import { FaqPanel } from './components/FaqPanel'
-import type { Seller, SearchHistoryEntry, ClickThroughEntry, ClickThroughBySeller, FaqItem, HealthCheckResult } from './types'
+import type { Seller, SearchHistoryEntry, ClickThroughEntry, ClickThroughBySeller, RecentSearch, RecentClickThrough, CountsByDate, FaqItem, HealthCheckResult } from './types'
+
+const RECENT_COUNT = 20
+const BY_DATE_DAYS = 30
 
 export default function App() {
   const [searchDays, setSearchDays] = useState<number | undefined>(undefined)
@@ -37,6 +43,22 @@ export default function App() {
     useCallback(() => api.fetchClickThroughByCardBySeller(ctCardDays), [ctCardDays])
   )
 
+  const recentSearchResult = useData<RecentSearch[]>(
+    useCallback(() => api.fetchRecentSearches(RECENT_COUNT), [])
+  )
+
+  const recentClickResult = useData<RecentClickThrough[]>(
+    useCallback(() => api.fetchRecentClickThroughs(RECENT_COUNT), [])
+  )
+
+  const searchesByDateResult = useData<CountsByDate>(
+    useCallback(() => api.fetchSearchesByDate(BY_DATE_DAYS), [])
+  )
+
+  const clicksByDateResult = useData<CountsByDate>(
+    useCallback(() => api.fetchClickThroughsByDate(BY_DATE_DAYS), [])
+  )
+
   const faqResult = useData<FaqItem[]>(
     useCallback(() => api.fetchFaq(), [])
   )
@@ -45,7 +67,7 @@ export default function App() {
     useCallback(() => api.fetchHealthCheck(), [healthTick])
   )
 
-  const anyError = [sellersResult, searchResult, ctSellerResult, ctCardResult, ctCardBySellerResult].some(r => r.status === 'error')
+  const anyError = [sellersResult, searchResult, ctSellerResult, ctCardResult, ctCardBySellerResult, recentSearchResult, recentClickResult, searchesByDateResult, clicksByDateResult].some(r => r.status === 'error')
 
   return (
     <div className="app">
@@ -89,6 +111,18 @@ export default function App() {
             topN={searchTopN}
             onTopNChange={setSearchTopN}
           />
+          <RecentSearchesPanel
+            data={recentSearchResult.data}
+            loading={recentSearchResult.status === 'loading'}
+            error={recentSearchResult.error}
+          />
+          <CountsByDatePanel
+            title="Searches per Day (last 30 days)"
+            label="Searches"
+            data={searchesByDateResult.data}
+            loading={searchesByDateResult.status === 'loading'}
+            error={searchesByDateResult.error}
+          />
           <ClickThroughPanel
             title="Click-throughs by Seller"
             data={ctSellerResult.data}
@@ -110,6 +144,18 @@ export default function App() {
             onDaysChange={setCtCardDays}
             topN={ctCardTopN}
             onTopNChange={setCtCardTopN}
+          />
+          <CountsByDatePanel
+            title="Click-throughs per Day (last 30 days)"
+            label="Click-throughs"
+            data={clicksByDateResult.data}
+            loading={clicksByDateResult.status === 'loading'}
+            error={clicksByDateResult.error}
+          />
+          <RecentClickThroughsPanel
+            data={recentClickResult.data}
+            loading={recentClickResult.status === 'loading'}
+            error={recentClickResult.error}
           />
         </div>
       </main>

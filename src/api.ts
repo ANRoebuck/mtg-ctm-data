@@ -1,5 +1,5 @@
 import { BASE_URL } from './config'
-import type { Seller, SearchHistoryEntry, ClickThroughEntry, ClickThroughBySeller, FaqItem, HealthCheckResult } from './types'
+import type { Seller, SearchHistoryEntry, ClickThroughEntry, ClickThroughBySeller, RecentSearch, RecentClickThrough, CountsByDate, FaqItem, HealthCheckResult } from './types'
 
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`)
@@ -37,6 +37,26 @@ export async function fetchClickThroughByCardBySeller(days?: number): Promise<Cl
   const query = days != null ? `?days=${days}` : ''
   const data = await get<{ clickThroughs: ClickThroughBySeller[] }>(`/api/data/click-through/cards-by-seller${query}`)
   return data.clickThroughs
+}
+
+export async function fetchRecentSearches(count: number): Promise<RecentSearch[]> {
+  const data = await get<{ recentSearches: RecentSearch[] }>(`/api/data/search-history/recent?count=${count}`)
+  return data.recentSearches
+}
+
+export async function fetchRecentClickThroughs(count: number): Promise<RecentClickThrough[]> {
+  const data = await get<{ recentClickThroughs: RecentClickThrough[] }>(`/api/data/click-through/recent?count=${count}`)
+  return data.recentClickThroughs
+}
+
+export async function fetchSearchesByDate(days: number): Promise<CountsByDate> {
+  const data = await get<{ searchesByDate: CountsByDate }>(`/api/data/search-history/by-date?days=${days}`)
+  return data.searchesByDate
+}
+
+export async function fetchClickThroughsByDate(days: number): Promise<CountsByDate> {
+  const data = await get<{ clickThroughsByDate: CountsByDate }>(`/api/data/click-through/by-date?days=${days}`)
+  return data.clickThroughsByDate
 }
 
 export async function fetchFaq(): Promise<FaqItem[]> {

@@ -33,3 +33,16 @@ export interface SellerHealthStatus {
 }
 
 export type HealthCheckResult = Record<string, SellerHealthStatus>
+
+export interface RecentSearch {
+  term: string
+  searchedAt: string
+}
+
+export interface RecentClickThrough {
+  card: string
+  seller: string
+  clickedAt: string
+}
+
+export type CountsByDate = Record<string, number>
