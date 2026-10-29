@@ -11,7 +11,7 @@ export function TruncatedTick({ x = 0, y = 0, payload }: TickProps) {
   const full = String(payload?.value ?? '')
   const text = full.length > MAX_CHARS ? `${full.slice(0, MAX_CHARS - 1)}…` : full
   return (
-    <text x={x} y={y} dy={4} textAnchor="end" fontSize={12}>
+    <text x={x} y={y} dy={4} textAnchor="end" fontSize={12} fill="var(--text)">
       <title>{full}</title>
       {text}
     </text>

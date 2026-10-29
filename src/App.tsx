@@ -3,6 +3,7 @@ import * as api from './api'
 import { useData } from './useData'
 import { SellersPanel } from './components/SellersPanel'
 import { SearchHistoryPanel } from './components/SearchHistoryPanel'
+import { ClickThroughRatePanel } from './components/ClickThroughRatePanel'
 import { ClickThroughPanel } from './components/ClickThroughPanel'
 import { CardsBySellerPanel } from './components/CardsBySellerPanel'
 import { RecentSearchesPanel } from './components/RecentSearchesPanel'
@@ -64,7 +65,8 @@ export default function App() {
   )
 
   const healthResult = useData<HealthCheckResult>(
-    useCallback(() => api.fetchHealthCheck(), [healthTick])
+    useCallback(() => api.fetchHealthCheck(), [healthTick]),
+    healthTick > 0
   )
 
   const anyError = [sellersResult, searchResult, ctSellerResult, ctCardResult, ctCardBySellerResult, recentSearchResult, recentClickResult, searchesByDateResult, clicksByDateResult].some(r => r.status === 'error')
@@ -84,7 +86,8 @@ export default function App() {
       </header>
 
       <main className="app-grid">
-        <div className="grid-col">
+        <div className="grid-col wide charts-grid">
+          <div className="span-2">
           <SellersPanel
             sellers={sellersResult.data}
             loading={sellersResult.status === 'loading'}
@@ -92,16 +95,23 @@ export default function App() {
             health={healthResult.data}
             healthLoading={healthResult.status === 'loading'}
             healthError={healthResult.error}
-            onRecheck={() => setHealthTick(t => t + 1)}
+            onCheck={() => setHealthTick(t => t + 1)}
           />
-          <FaqPanel
-            faq={faqResult.data}
-            loading={faqResult.status === 'loading'}
-            error={faqResult.error}
+          </div>
+          <CountsByDatePanel
+            title="Searches per Day (last 30 days)"
+            label="Searches"
+            data={searchesByDateResult.data}
+            loading={searchesByDateResult.status === 'loading'}
+            error={searchesByDateResult.error}
           />
-        </div>
-
-        <div className="grid-col wide">
+          <CountsByDatePanel
+            title="Click-throughs per Day (last 30 days)"
+            label="Click-throughs"
+            data={clicksByDateResult.data}
+            loading={clicksByDateResult.status === 'loading'}
+            error={clicksByDateResult.error}
+          />
           <SearchHistoryPanel
             history={searchResult.data}
             loading={searchResult.status === 'loading'}
@@ -111,27 +121,12 @@ export default function App() {
             topN={searchTopN}
             onTopNChange={setSearchTopN}
           />
-          <RecentSearchesPanel
-            data={recentSearchResult.data}
-            loading={recentSearchResult.status === 'loading'}
-            error={recentSearchResult.error}
-          />
-          <CountsByDatePanel
-            title="Searches per Day (last 30 days)"
-            label="Searches"
-            data={searchesByDateResult.data}
-            loading={searchesByDateResult.status === 'loading'}
-            error={searchesByDateResult.error}
-          />
-          <ClickThroughPanel
-            title="Click-throughs by Seller"
-            data={ctSellerResult.data}
-            loading={ctSellerResult.status === 'loading'}
-            error={ctSellerResult.error}
-            days={ctSellerDays}
-            onDaysChange={setCtSellerDays}
-            topN={ctSellerTopN}
-            onTopNChange={setCtSellerTopN}
+          <ClickThroughRatePanel
+            title="Click-through Rate per Day (last 30 days)"
+            searches={searchesByDateResult.data}
+            clickThroughs={clicksByDateResult.data}
+            loading={searchesByDateResult.status === 'loading' || clicksByDateResult.status === 'loading'}
+            error={searchesByDateResult.error ?? clicksByDateResult.error}
           />
           <CardsBySellerPanel
             allSellers={ctCardResult.data}
@@ -145,18 +140,33 @@ export default function App() {
             topN={ctCardTopN}
             onTopNChange={setCtCardTopN}
           />
-          <CountsByDatePanel
-            title="Click-throughs per Day (last 30 days)"
-            label="Click-throughs"
-            data={clicksByDateResult.data}
-            loading={clicksByDateResult.status === 'loading'}
-            error={clicksByDateResult.error}
+          <ClickThroughPanel
+            title="Click-throughs by Seller"
+            data={ctSellerResult.data}
+            loading={ctSellerResult.status === 'loading'}
+            error={ctSellerResult.error}
+            days={ctSellerDays}
+            onDaysChange={setCtSellerDays}
+            topN={ctSellerTopN}
+            onTopNChange={setCtSellerTopN}
+          />
+          <RecentSearchesPanel
+            data={recentSearchResult.data}
+            loading={recentSearchResult.status === 'loading'}
+            error={recentSearchResult.error}
           />
           <RecentClickThroughsPanel
             data={recentClickResult.data}
             loading={recentClickResult.status === 'loading'}
             error={recentClickResult.error}
           />
+          <div className="span-2">
+          <FaqPanel
+            faq={faqResult.data}
+            loading={faqResult.status === 'loading'}
+            error={faqResult.error}
+          />
+          </div>
         </div>
       </main>
     </div>

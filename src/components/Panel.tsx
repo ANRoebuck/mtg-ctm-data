@@ -34,7 +34,7 @@ export function Panel({ title, id, children, className = '' }: Props) {
   }
 
   return (
-    <section className={`panel ${className}`}>
+    <section className={`panel ${collapsed ? 'collapsed' : ''} ${className}`}>
       <h2 className="panel-title-row">
         <button type="button" className="panel-title-toggle" onClick={toggle} aria-expanded={!collapsed}>
           <span className="panel-title">{title}</span>

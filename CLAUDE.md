@@ -38,8 +38,9 @@ App.tsx
 Each panel component receives `{ data, loading, error }` as props — they are purely presentational. All state lives in `App.tsx`.
 
 **Exceptions:**
-- `SellersPanel` combines two `useData` results (sellers + seller health check) into one merged display, since the health check is slower and keyed by seller name. It receives `sellers`/`loading`/`error` for the seller list plus `health`/`healthLoading`/`healthError` and an `onRecheck` callback for the health data — sellers render immediately, with each row showing a spinner until that seller's health result resolves.
+- `SellersPanel` combines two `useData` results (sellers + seller health check) into one merged display, since the health check is slower and keyed by seller name. It receives `sellers`/`loading`/`error` for the seller list plus `health`/`healthLoading`/`healthError` and an `onCheck` callback for the health data — sellers render immediately. The health check does not run on load (`useData` takes an optional `enabled` flag, off until `healthTick > 0`); the "Check health" button triggers it, and each row then shows a spinner until that seller's health result resolves.
 - `CardsBySellerPanel` combines two `useData` results (`fetchClickThroughByCard` aggregated across all sellers + `fetchClickThroughByCardBySeller` broken down per seller) behind a single "Seller" dropdown. It receives `allSellers`/`allSellersLoading`/`allSellersError` and `bySeller`/`bySellerLoading`/`bySellerError`; both requests fire in parallel from `App.tsx` (sharing the same `days` filter) and the component's local seller selection just picks which result to render — "All sellers" (the default) shows the aggregate, selecting a named seller shows that seller's own `cards` breakdown.
+- `ClickThroughRatePanel` combines the searches-per-day and click-throughs-per-day results (`searches`/`clickThroughs`, plus a merged `loading`/`error`) and plots clicks ÷ searches per day as a line chart. Days with no searches are left as gaps.
 
 ### Adding a new panel
 
@@ -50,4 +51,4 @@ Each panel component receives `{ data, loading, error }` as props — they are p
 
 ### Styling
 
-All styles are in `src/index.css` — a single flat file using CSS custom properties defined on `:root`. No CSS modules, no Tailwind. The layout is a two-column CSS grid (narrow left sidebar + wide right column), collapsing to one column below 900 px.
+All styles are in `src/index.css` — a single flat file using CSS custom properties defined on `:root`. No CSS modules, no Tailwind. The layout is a single two-column CSS grid of panels (Health Status first and FAQ last, each spanning both columns), collapsing to one column below 900 px.

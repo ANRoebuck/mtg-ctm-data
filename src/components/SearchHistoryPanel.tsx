@@ -73,7 +73,7 @@ export function SearchHistoryPanel({ history, loading, error, days, onDaysChange
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={visible} layout="vertical" margin={{ left: 4, right: 20, top: 4, bottom: 4 }}>
             <XAxis type="number" tick={{ fontSize: 12 }} />
-            <YAxis type="category" dataKey="term" width={120} tick={<TruncatedTick />} />
+            <YAxis type="category" dataKey="term" width={120} interval={0} tick={<TruncatedTick />} />
             <Tooltip formatter={(val) => [val, 'Searches']} />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
               {visible.map((_, i) => (

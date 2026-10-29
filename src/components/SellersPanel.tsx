@@ -12,7 +12,7 @@ interface Props {
   health: HealthCheckResult | null
   healthLoading: boolean
   healthError: string | null
-  onRecheck: () => void
+  onCheck: () => void
 }
 
 function isHealthy(health: HealthCheckResult | null, name: string): boolean {
@@ -28,7 +28,7 @@ function bySellerHealth(health: HealthCheckResult | null) {
   }
 }
 
-export function SellersPanel({ sellers, loading, error, health, healthLoading, healthError, onRecheck }: Props) {
+export function SellersPanel({ sellers, loading, error, health, healthLoading, healthError, onCheck }: Props) {
   const grouped = sellers
     ? REGION_ORDER.reduce<Record<string, Seller[]>>((acc, region) => {
         const inRegion = sellers
@@ -45,8 +45,8 @@ export function SellersPanel({ sellers, loading, error, health, healthLoading, h
     <Panel id="sellers" title="Health Status">
       {sellers && (
         <div className="panel-controls">
-          <button className="btn-reload" onClick={onRecheck} disabled={healthLoading}>
-            {healthLoading ? 'Checking…' : 'Recheck health'}
+          <button className="btn-reload" onClick={onCheck} disabled={healthLoading}>
+            {healthLoading ? 'Checking…' : 'Check health'}
           </button>
         </div>
       )}

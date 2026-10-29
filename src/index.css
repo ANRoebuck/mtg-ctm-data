@@ -46,7 +46,7 @@ body { min-height: 100vh; background: var(--bg); }
 
 .app-grid {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
   padding: 20px 24px;
   align-items: start;
@@ -55,6 +55,14 @@ body { min-height: 100vh; background: var(--bg); }
 
 .grid-col { display: flex; flex-direction: column; gap: 20px; }
 .grid-col.wide { min-width: 0; }
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+/* A collapsed panel keeps just its title bar rather than stretching to match its neighbour */
+.charts-grid > .panel.collapsed { align-self: start; }
+.charts-grid > .span-2 { grid-column: 1 / -1; }
 
 /* ── Panel ──────────────────────────────────────── */
 .panel {
@@ -292,4 +300,5 @@ body { min-height: 100vh; background: var(--bg); }
 /* ── Responsive ──────────────────────────────────── */
 @media (max-width: 900px) {
   .app-grid { grid-template-columns: 1fr; }
+  .charts-grid { grid-template-columns: 1fr; }
 }

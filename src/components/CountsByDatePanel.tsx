@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { Panel } from './Panel'
 import { LoadingSpinner } from './LoadingSpinner'
 import { ConnectionWarning } from './ConnectionWarning'
@@ -20,10 +20,11 @@ function formatDate(date: string): string {
 export function CountsByDatePanel({ title, label, data, loading, error }: Props) {
   const points = data ? Object.entries(data).map(([date, count]) => ({ date, count })) : []
   const total = points.reduce((s, p) => s + p.count, 0)
+  const average = points.length > 0 ? total / points.length : 0
 
   return (
     <Panel title={title}>
-      {total > 0 && <p className="total-label">Total: <strong>{total}</strong> {label.toLowerCase()}</p>}
+      {total > 0 && <p className="total-label">Total: <strong>{total}</strong> {label.toLowerCase()} · Average: <strong>{average.toFixed(1)}</strong> per day</p>}
 
       {loading && <LoadingSpinner />}
       {error && <ConnectionWarning message={error} />}
@@ -39,6 +40,7 @@ export function CountsByDatePanel({ title, label, data, loading, error }: Props)
             <YAxis allowDecimals={false} tick={{ fontSize: 12 }} width={32} />
             <Tooltip labelFormatter={(d) => formatDate(String(d))} formatter={(val) => [val, label]} />
             <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
+            <ReferenceLine y={average} stroke="var(--warn)" strokeDasharray="4 4" />
           </BarChart>
         </ResponsiveContainer>
       )}

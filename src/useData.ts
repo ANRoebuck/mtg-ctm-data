@@ -9,7 +9,7 @@ interface UseDataResult<T> {
   reload: () => void
 }
 
-export function useData<T>(fetcher: () => Promise<T>): UseDataResult<T> {
+export function useData<T>(fetcher: () => Promise<T>, enabled = true): UseDataResult<T> {
   const [data, setData] = useState<T | null>(null)
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState<string | null>(null)
@@ -18,6 +18,7 @@ export function useData<T>(fetcher: () => Promise<T>): UseDataResult<T> {
   const reload = useCallback(() => setTick(t => t + 1), [])
 
   useEffect(() => {
+    if (!enabled) return
     let cancelled = false
     setStatus('loading')
     setError(null)
@@ -35,7 +36,7 @@ export function useData<T>(fetcher: () => Promise<T>): UseDataResult<T> {
         }
       })
     return () => { cancelled = true }
-  }, [tick, fetcher])
+  }, [tick, fetcher, enabled])
 
   return { data, status, error, reload }
 }

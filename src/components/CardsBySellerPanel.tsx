@@ -99,10 +99,10 @@ export function CardsBySellerPanel({
       )}
 
       {visible.length > 0 && chartType === 'bar' && (
-        <ResponsiveContainer width="100%" height={260}>
+        <ResponsiveContainer width="100%" height={300}>
           <BarChart data={visible} layout="vertical" margin={{ left: 4, right: 20, top: 4, bottom: 4 }}>
             <XAxis type="number" tick={{ fontSize: 12 }} />
-            <YAxis type="category" dataKey="name" width={120} tick={<TruncatedTick />} />
+            <YAxis type="category" dataKey="name" width={120} interval={0} tick={<TruncatedTick />} />
             <Tooltip formatter={(val) => [val, 'Click-throughs']} />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
               {visible.map((_, i) => (
